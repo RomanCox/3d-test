@@ -1,0 +1,19 @@
+.imageContainer {
+  position: relative;
+  z-index: 1;
+
+  .is-contain {
+    picture {
+      img {
+        object-fit: contain;
+      }
+    }
+  }
+
+  picture {
+    img {
+      display: block;
+      @include size(100%);
+    }
+  }
+}

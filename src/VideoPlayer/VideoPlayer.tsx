@@ -4,12 +4,15 @@ import {initialState, reducer} from "../store/store.ts";
 import {classNames, Mods} from "../helpers/classNames.ts";
 
 import cls from "./VideoPlayer.module.scss";
+import {actionVideoLength} from "../assets/constants/media.ts";
 
 export const VideoPlayer: FC = () => {
     const [state, dispatch] = useReducer(reducer, initialState);
 
     const handleVideoPlay  = () => {
+        dispatch({ type: 'BTN_DISABLED' });
         dispatch({ type: 'VIDEO_PLAY' });
+        setTimeout(() => dispatch({ type: 'BTN_UNDISABLED' }), actionVideoLength);
     };
 
     const handleNextStep = () => {
@@ -45,7 +48,7 @@ export const VideoPlayer: FC = () => {
                 playsInline
                 onEnded={handleNextStep}
             />
-            <button className={cls.rightBtn} onClick={handleVideoPlay}/>
+            <button className={cls.rightBtn} onClick={handleVideoPlay} disabled={state.btnDisabled}/>
         </div>
     );
 };

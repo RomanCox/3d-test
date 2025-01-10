@@ -10,3 +10,5 @@ export const mediaItems: MediaItem[] = [
     { id: 3, stopVideo: '/video/stop_3.webp', actionVideo: '/video/animation_3.mp4' },
     { id: 4, stopVideo: '/video/stop_4.webp', actionVideo: '/video/animation_4.mp4' },
 ];
+
+export const actionVideoLength = 4000;

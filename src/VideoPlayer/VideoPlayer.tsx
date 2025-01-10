@@ -1,10 +1,10 @@
-import {FC, useReducer} from "react";
+import {FC, useEffect, useReducer} from "react";
 
 import {initialState, reducer} from "../store/store.ts";
 import {classNames, Mods} from "../helpers/classNames.ts";
 
 import cls from "./VideoPlayer.module.scss";
-import {actionVideoLength} from "../assets/constants/media.ts";
+import {actionVideoLength, mediaItems} from "../assets/constants/media.ts";
 
 export const VideoPlayer: FC = () => {
     const [state, dispatch] = useReducer(reducer, initialState);
@@ -29,6 +29,34 @@ export const VideoPlayer: FC = () => {
         [cls.show]: state.isVideoAction,
         [cls.hide]: !state.isVideoAction
     };
+
+    useEffect(() => {
+        const videoCache: Record<string, HTMLVideoElement> = {};
+
+        const preloadNextVideo = (type: "stop" | "animation", step: number) => {
+            const cacheKey = `${type}_${step}`;
+            if (!videoCache[cacheKey]) {
+                const videoElement = document.createElement("video");
+                videoElement.src = `/video/${type}_${step}.mp4`;
+                videoElement.preload = "auto";
+                videoCache[cacheKey] = videoElement;
+
+                videoElement.oncanplaythrough = () => {
+                    console.log(`${cacheKey} preloaded`);
+                };
+            }
+        };
+
+        const nextStep = state.videoStep === mediaItems.length ? 1 : state.videoStep + 1;
+        preloadNextVideo("animation", nextStep);
+        preloadNextVideo("stop", nextStep);
+
+        return () => {
+            for (const key in videoCache) {
+                delete videoCache[key];
+            }
+        };
+    }, [state.videoStep]);
 
     return (
         <div className={cls.videoContainer}>
